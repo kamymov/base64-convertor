@@ -1,3 +1,5 @@
+import constants.Base64Table;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,19 +21,20 @@ public class Encoder {
         char[] allBitsArray = allBits.toString().toCharArray();
         for (int i = 0; i < allBitsArray.length ; i += chunkSize) {
             StringBuilder subBits = new StringBuilder();
-            for(int j = i; j < i + chunkSize; j++) {
-                subBits.append(allBitsArray[j]);
-            }
-            if (subBits.length() == 4) {
-                subBits.append("00");
+            for(int j = i; j < i + chunkSize ; j++) {
+                if (j < allBitsArray.length) {
+                    subBits.append(allBitsArray[j]);
+                } else {
+                    subBits.append("0");
+                }
             }
             chunks.add(subBits.toString());
         }
+
         return chunks;
     }
 
     public List<Integer> calcValue(List<String> stringBytes) {
-        System.out.println(stringBytes);
         List<Integer> valueList = new ArrayList<>();
         for(int  i = 0; i < stringBytes.size(); i++) {
             String reversed = new StringBuilder(stringBytes.get(i))
@@ -49,8 +52,14 @@ public class Encoder {
             }
             valueList.add(val);
         }
-
         return valueList;
     }
 
+    public String createEncodedText(List<Integer> valueInt) {
+        StringBuilder encodedText = new StringBuilder();
+        for (int i = 0; i < valueInt.size(); i++) {
+            encodedText.append(Base64Table.base64Table[valueInt.get(i)]);
+        }
+        return encodedText.toString();
+    }
 }
